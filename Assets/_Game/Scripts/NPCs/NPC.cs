@@ -9,13 +9,14 @@ using static UnityEngine.GraphicsBuffer;
 public class NPC : CharacterBase
 {
     public Vector3 target  = Vector3.zero;
-    public Transform finisPoint;
+    public Transform finisPoint ;
     public NavMeshAgent agent;
     public float distanceCheckBrick = 10;
     #region State
     public NPC_Idle idle { get; private set; }
     public NPC_Patrol patrol { get; private set; }
     public NPC_Attack attack { get; private set; }
+    public NPC_Win win { get; private set; }
     protected Rigidbody rb;
     #endregion
     protected override void Awake()
@@ -29,15 +30,17 @@ public class NPC : CharacterBase
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         agent.speed = speed;
-        idle = new NPC_Idle("Idle", animator, this, controllerState, this, rb);
-        patrol = new NPC_Patrol("Run",animator,this,controllerState, this, rb);
-        attack = new NPC_Attack("Run",animator, this,controllerState, this, rb);
+        idle = new NPC_Idle(CacheString.StateIlde, animator, this, controllerState, this, rb);
+        patrol = new NPC_Patrol(CacheString.StateRun,animator,this,controllerState, this, rb);
+        attack = new NPC_Attack(CacheString.StateRun, animator, this,controllerState, this, rb);
+        win = new NPC_Win(CacheString.StateWin, animator, this,controllerState, this,rb);
+
     }
 
     protected override void Start()
     {
         base.Start();
-        controllerState.InstallState(idle);
+        controllerState.InstallState(attack);
     }
 
     protected override void Update()
@@ -52,36 +55,13 @@ public class NPC : CharacterBase
         base.FixedUpdate();
         controllerState.curentState.FixUpdate();
     }
-
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-    }
-    public override void AddBrick(Brick brick)
-    {
-        base.AddBrick(brick);
-    }
-
-    public override void ClearBrick()
-    {
-        base.ClearBrick();
-    }
-
-    public override void OnStop()
-    {
-        base.OnStop();
-    }
-
     public override void OnWin()
     {
         base.OnWin();
+        agent.isStopped = true;
+        agent.enabled = false;
+        controllerState.ChangeState(win);
     }
-
-    public override void RemoveBrick(Brick brick)
-    {
-        base.RemoveBrick(brick);
-    }
-
     public void CheckStairMovement()
     {
         Physics.Raycast(checkStair.transform.position, Vector3.down, out RaycastHit hit, checkStairDistance, lmStair);
@@ -105,7 +85,7 @@ public class NPC : CharacterBase
         Vector3 lastPoint = Vector3.zero;
         float minDistance = Mathf.Infinity;
         Vector3 currentPos = transform.position;
-        List<Brick> bricks = PoolBrickManager.instance.bricks;
+        List<Brick> bricks = StateLevel.instance.bricks;
         foreach (Brick brick in bricks)
         {
             if (!brick.gameObject.activeInHierarchy || brick.color != color) continue;
@@ -118,7 +98,7 @@ public class NPC : CharacterBase
         }
         return lastPoint;
     }
-
+    public ControllerState GetControllerState()=>controllerState;
     protected override void OnDrawGizmos()
     {
         base.OnDrawGizmos();

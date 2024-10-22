@@ -10,6 +10,7 @@ public class Player : CharacterBase
     #region State
     public IdlePlayerState idle {  get; private set; }
     public RunPlayerState run { get; private set; }
+    public WinPlayer win { get; private set; }
     #endregion
     #region Input
     PlayerController playerController;
@@ -24,17 +25,21 @@ public class Player : CharacterBase
         base.Awake();
         OnInitState();
         controller = GetComponent<CharacterController>();
+        controller.enabled = false;
     }
     protected override void OnEnable()
     {
         base.OnEnable();
         OnInitInput();
     }
-    private void OnDisable()
+
+    protected override void OnDisable()
     {
+        base.OnDisable();
         move.Disable();
         move.performed -= OnMove;
     }
+    #region OnInit
     private void OnInitInput()
     {
         move = playerController.Player.Move;
@@ -45,10 +50,13 @@ public class Player : CharacterBase
 
     private void OnInitState()
     {
-        idle = new IdlePlayerState("Idle", animator, this, controllerState, controller, this);
-        run = new RunPlayerState("Run", animator, this, controllerState, controller, this);
+        idle = new IdlePlayerState(CacheString.StateIlde, animator, this, controllerState, controller, this);
+        run = new RunPlayerState(CacheString.StateRun, animator, this, controllerState, controller, this);
+        win = new WinPlayer(CacheString.StateWin, animator, this,controllerState, controller, this);
         playerController = new PlayerController();
     }
+
+    #endregion
 
     protected override void Start()
     {
@@ -71,29 +79,12 @@ public class Player : CharacterBase
         if (!isWalk) return;
         controllerState.curentState.Update();
     }
-    public override void AddBrick(Brick brick)
-    {
-        base.AddBrick(brick);
-    }
-
-    public override void ClearBrick()
-    {
-        base.ClearBrick();
-    }
-
-    public override void OnStop()
-    {
-        base.OnStop();
-    }
-
     public override void OnWin()
     {
         base.OnWin();
-    }
+        controller.enabled = false;
+        controllerState.ChangeState(win);
 
-    public override void RemoveBrick(Brick brick)
-    {
-        base.RemoveBrick(brick);
     }
     public void CheckStairMovement()
     {
@@ -110,7 +101,7 @@ public class Player : CharacterBase
         isWalk = true;
         if (stairBrick == null|| groundBricks.Count < 1) return ;
         Brick brick = groundBricks[groundBricks.Count - 1];
-        if(stairBrick.color==color)return;
+        if(stairBrick.color==color||directionMove.z<=0)return;
         stairBrick.AddBrick(brick);
         RemoveBrick(brick);
 
@@ -124,7 +115,10 @@ public class Player : CharacterBase
     }
     private void OffMove(InputAction.CallbackContext callback)
     {
-       
         directionMove = Vector3.zero;
     }
+
+
+
+  
 }

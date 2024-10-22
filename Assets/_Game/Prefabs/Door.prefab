@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2858384020087955915}
   - component: {fileID: 5746531677279979444}
   - component: {fileID: 5598536251931275211}
+  - component: {fileID: 682392692124130994}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -28,9 +29,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1228878101857626859}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3, y: 8, z: 21.5}
-  m_LocalScale: {x: 4.05, y: 1.64, z: 1.64}
+  m_LocalScale: {x: 4, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -104,7 +105,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 0.66}
+  m_Size: {x: 0.59, y: 1, z: 0.66}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5598536251931275211
 MonoBehaviour:
@@ -122,3 +123,15 @@ MonoBehaviour:
   localDirection: 0
   triggerScale: {x: 1.25, y: 1.25, z: 1.25}
   penetrationDepthThreshold: 0.2
+--- !u!114 &682392692124130994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1228878101857626859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a2afc6b244d3cb4da565de05b3955fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

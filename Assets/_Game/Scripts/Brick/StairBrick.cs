@@ -10,15 +10,6 @@ public class StairBrick : Brick
         material.enabled = false;
 
     }
-    protected override void Start()
-    {
-        base.Start();
-    }
-
-    protected override void Update()
-    {
-        base.Update();
-    }
     public override void AddBrick(Brick brick)
     {
         material.enabled = true;
@@ -26,22 +17,5 @@ public class StairBrick : Brick
         ActiveColor();
         brick.gameObject.SetActive(true);
     }
-
-    public override void ClearBrick()
-    {
-        base.ClearBrick();
-    }
-
-    public override void RemoveBrick(Brick brick)
-    {
-        base.RemoveBrick(brick);
-    }
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-    }
-
-   
-
 
 }

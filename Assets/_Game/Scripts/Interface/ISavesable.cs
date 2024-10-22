@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface ISavesable 
 {
-    void Save();
-    void Load();
+    void Save(ref DataGame data);
+    void Load(DataGame data);
 }

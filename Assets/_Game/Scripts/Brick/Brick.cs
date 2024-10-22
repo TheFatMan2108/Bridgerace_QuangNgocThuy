@@ -32,7 +32,7 @@ public class Brick : MonoBehaviour,IBricksable,IChangeColor
 
     protected virtual void OnEnable()
     {
-        
+        // do some things
     }
 
     public void ActiveColor()
@@ -44,22 +44,22 @@ public class Brick : MonoBehaviour,IBricksable,IChangeColor
 
     protected virtual void Start()
     {
-        
+        // do some things
     }
 
     protected virtual void Update()
     {
-        
+        // do some things
     }
 
     public virtual void AddBrick(Brick brick)
     {
-       
+        // do some things
     }
 
     public virtual void ClearBrick()
     {
-        
+        // do some things
     }
 
     public virtual void RemoveBrick(Brick brick)

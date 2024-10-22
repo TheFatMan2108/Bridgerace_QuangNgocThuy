@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 using UnityEngine;
 
 [RequireComponent(typeof(CapsuleCollider))]
@@ -9,6 +10,7 @@ public class CharacterBase : MonoBehaviour,IBricksable,IWinsable
 {
     public List<Brick> groundBricks = new List<Brick>();
     public List<Brick> playerBricks = new List<Brick>();
+    public int score { get; set; }
     public GameObject brick;
     public Transform spawnPoint;
     public ColorType color;
@@ -22,21 +24,19 @@ public class CharacterBase : MonoBehaviour,IBricksable,IWinsable
     public Vector3 velocity;
     protected Animator animator;
     protected MatColor matColors;
-    protected ControllerState controllerState;
+    public ControllerState controllerState;
     protected float heightBrick;
-
     protected virtual void Awake()
     {
         OnInit();
     }
-
     private void OnInit()
     {
         animator = GetComponentInChildren<Animator>();
         controllerState = new ControllerState();
         matColors = Resources.Load<MatColor>("Colors/Colors1");
        
-        
+
     }
 
     protected virtual void OnEnable()
@@ -56,6 +56,8 @@ public class CharacterBase : MonoBehaviour,IBricksable,IWinsable
 
     protected virtual void Start()
     {
+        GameManager.instance.AddCharacter(this);
+        GameManager.instance.AddWinsable(this);
         child = transform.GetChild(0);
     }
     protected virtual void FixedUpdate()
@@ -83,12 +85,18 @@ public class CharacterBase : MonoBehaviour,IBricksable,IWinsable
             Brick bri = playerBricks[groundBricks.Count-1];
             bri.gameObject.SetActive(true);
         }
-        
+        score = groundBricks.Count;
     }
 
     public virtual void ClearBrick()
     {
-        
+        for(int i=0;i<groundBricks.Count;i++)
+        {
+            heightBrick -= 0.21f;
+            GameObject nBrick = playerBricks[i].gameObject;
+            nBrick.gameObject.SetActive(false);
+        }
+        groundBricks.Clear();
     }
 
     public virtual void RemoveBrick(Brick brick)
@@ -103,12 +111,13 @@ public class CharacterBase : MonoBehaviour,IBricksable,IWinsable
 
     public virtual void OnWin()
     {
-       
+        ClearBrick();
     }
 
     public virtual void OnStop()
     {
-       
+        score = 0;
+        floorIndex = 0;
     }
     public Material GetColor(ColorType colorType)
     {
@@ -121,6 +130,33 @@ public class CharacterBase : MonoBehaviour,IBricksable,IWinsable
         Gizmos.color = UnityEngine.Color.red;
         Gizmos.DrawLine(checkStair.transform.position, checkStair.transform.position + new Vector3(0, checkStairDistance * -1));
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(CacheString.TagFinished))
+        {
+            GameManager.instance.Winner();
+            List<CharacterBase> list = new List<CharacterBase>();
+            list.AddRange(GameManager.instance.characterBases);
+            transform.position = StateLevel.instance.topPositon[0].position;
+            list.Remove(this);
+            list.Sort((a, b) => b.score.CompareTo(a.score));
+            for (int i = 1; i < StateLevel.instance.topPositon.Length; i++)
+            {
+                if (list.Count <= i) break;
+                list[i-1].transform.position = StateLevel.instance.topPositon[i].position;
+            }
+        }
+       
+    }
+    protected virtual void OnDisable()
+    {
+    }
+    private void OnDestroy()
+    {
+        GameManager.instance.RemoveWinsable(this);
+        GameManager.instance.RemoveCharacter(this);
+    }
+    public int GetScore() => score;
 }
 public enum ColorType
 {

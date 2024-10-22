@@ -31,7 +31,8 @@ public class PlayerStateParent : StateParentBase
         }
         velocity = directionMove.normalized * player.speed;
         velocity = velocity + new Vector3(0, -20f, 0);
-        player.controller.Move(velocity * Time.deltaTime);
+        if(player.controller.enabled) 
+            player.controller.Move(velocity * Time.deltaTime);
     }
     public override void FixUpdate()
     {

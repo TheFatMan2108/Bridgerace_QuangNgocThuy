@@ -26,7 +26,7 @@ public class NPCStateParrent : StateParentBase
     public override void FixUpdate()
     {
         base.FixUpdate();
-        rb.velocity = rb.velocity + new Vector3(0, -20f, 0);
+        //rb.velocity = rb.velocity + new Vector3(0, -20f, 0);
     }
     public override void Exit()
     {

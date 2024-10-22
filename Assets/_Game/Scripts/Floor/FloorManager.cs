@@ -9,7 +9,7 @@ public class FloorManager : MonoBehaviour
         if(other.TryGetComponent(out CharacterBase character))
         {
             character.floorIndex++;
-            PoolBrickManager.instance.SpawnBricksInFloorAnColor(character.floorIndex,character.color);
+            StateLevel.instance.SpawnBricksInFloorAnColor(character.floorIndex,character.color);
         }
     }
     
